@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print one line
-        run: echo"Hello"
+        run: echo "Hello"
       - name: Print multi line
         run: 
           echo "all"

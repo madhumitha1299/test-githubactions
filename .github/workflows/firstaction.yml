@@ -7,7 +7,7 @@ jobs:
       - name: Print one line
         run: echo "Hello"
       - name: Print multi line
-        run: 
+        run: |
           echo "all"
           echo "done"
         

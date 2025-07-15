@@ -25,9 +25,9 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y google-chrome-stable
-
-      - name: Run dashboard.py (SSO Skipped)
-        run: python madhumitha1299/test-githubactions/dashboard.py
-
       - name: List files in repo root
         run: ls -la
+      - name: Run dashboard.py (SSO Skipped)
+        run: python dashboard.py
+
+     

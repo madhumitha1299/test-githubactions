@@ -28,3 +28,6 @@ jobs:
 
       - name: Run dashboard.py (SSO Skipped)
         run: python madhumitha1299/test-githubactions/dashboard.py
+
+      - name: List files in repo root
+        run: ls -la

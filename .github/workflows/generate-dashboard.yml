@@ -7,6 +7,8 @@ on:
       - 'data/**'       # Only run if Excel files change
       - 'generate_dashboard.py'
       - '.github/workflows/generate-dashboard.yml'
+permissions:
+  contents: write
 
 jobs:
   build:

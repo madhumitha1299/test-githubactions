@@ -27,4 +27,4 @@ jobs:
           sudo apt install -y google-chrome-stable
 
       - name: Run dashboard.py (SSO Skipped)
-        run: python dashboard.py
+        run: python test-githubactions/dashboard.py

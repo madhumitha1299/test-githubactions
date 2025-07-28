@@ -33,7 +33,6 @@ jobs:
 
     - name: Run download reports script
       run: |
-        # Create the Python script on the fly and save it to download_reports.py
         echo "
 import os
 import time

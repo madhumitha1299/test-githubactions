@@ -19,46 +19,46 @@ jobs:
     - name: Write Python script
       run: |
         echo "
-import os
-import time
-import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
+          import os
+          import time
+          import pandas as pd
+          from selenium import webdriver
+          from selenium.webdriver.chrome.service import Service
+          from selenium.webdriver.chrome.options import Options
+          from selenium.webdriver.common.by import By
+          from selenium.webdriver.common.keys import Keys
+          from selenium.webdriver.support.ui import WebDriverWait
+          from selenium.webdriver.support import expected_conditions as EC
+          from webdriver_manager.chrome import ChromeDriverManager
 
-def download_report(driver, wait, report_id):
-    search_box = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, \"//input[@type='search' and @aria-controls='DataTables_Table_0']\")
-        )
-    )
-    search_box.clear()
-    search_box.send_keys(str(report_id))
-    print(f\"🔍 Entered '{report_id}' into search box.\")
-    search_box.send_keys(Keys.ENTER)
-    time.sleep(3)
+            def download_report(driver, wait, report_id):
+              search_box = wait.until(
+                EC.presence_of_element_located(
+                  (By.XPATH, \"//input[@type='search' and @aria-controls='DataTables_Table_0']\")
+                            )
+                          )
+                      search_box.clear()
+                        search_box.send_keys(str(report_id))
+                          print(f\"🔍 Entered '{report_id}' into search box.\")
+                            search_box.send_keys(Keys.ENTER)
+                            time.sleep(3)
 
-    actions_button = wait.until(
-        EC.element_to_be_clickable(
-            (By.XPATH, \"//a[contains(text(), 'Actions') and contains(@class, 'dropdown-toggle')]\")
+                        actions_button = wait.until(
+                                EC.element_to_be_clickable(
+                                          (By.XPATH, \"//a[contains(text(), 'Actions') and contains(@class, 'dropdown-toggle')]\")
         )
-    )
-    actions_button.click()
-    print(f\"⚙️ Clicked 'Actions' dropdown for report {report_id}.\")
-    export_xpath = f\"//a[@href='/R{report_id}/export/xlsx' and contains(text(), 'Export Excel .xlsx')]\"
-    export_option = wait.until(
-        EC.element_to_be_clickable(
-            (By.XPATH, export_xpath)
-        )
-    )
-    export_option.click()
-    print(f\"📁 Clicked 'Export Excel .xlsx' for report {report_id}.\")
-    time.sleep(10)
+                                        )
+                                  actions_button.click()
+                              print(f\"⚙️ Clicked 'Actions' dropdown for report {report_id}.\")
+                                export_xpath = f\"//a[@href='/R{report_id}/export/xlsx' and contains(text(), 'Export Excel .xlsx')]\"
+                                export_option = wait.until(
+                              EC.element_to_be_clickable(
+                          (By.XPATH, export_xpath)
+                            )
+                                        )
+                                  export_option.click()
+                          print(f\"📁 Clicked 'Export Excel .xlsx' for report {report_id}.\")
+          time.sleep(10)
 
 def get_latest_excel_file():
     download_dir = os.path.join(os.path.expanduser(\"~\"), \"Downloads\")

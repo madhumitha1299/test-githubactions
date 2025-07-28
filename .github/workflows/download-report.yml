@@ -27,4 +27,4 @@ jobs:
 
     - name: Run Python script
       run: |
-        python download.py
+        python .github/workflows/download.py

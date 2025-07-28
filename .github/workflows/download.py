@@ -71,7 +71,9 @@ def print_excel_columns(filepath):
 # Setup Chrome options
 chrome_options = Options()
 chrome_options.add_argument("--start-maximized")
-# chrome_options.add_argument("--headless")  # Uncomment to run in headless mode
+chrome_options.add_argument("--no-sandbox")  # Disable sandboxing (needed in GitHub Actions)
+chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resources in CI
+chrome_options.add_argument("--headless")  # Run in headless mode (no UI)
 
 # Initialize Chrome driver
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)

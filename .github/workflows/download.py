@@ -1,0 +1,122 @@
+import os
+import time
+import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+
+def download_report(driver, wait, report_id):
+    # Search for the report by ID
+    search_box = wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, '//input[@type="search" and @aria-controls="DataTables_Table_0"]')
+        )
+    )
+    search_box.clear()
+    search_box.send_keys(str(report_id))  # Enter the report ID
+    print(f"🔍 Entered '{report_id}' into search box.")
+    search_box.send_keys(Keys.ENTER)
+    time.sleep(3)
+
+    # Click Actions dropdown
+    actions_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.XPATH, '//a[contains(text(), "Actions") and contains(@class, "dropdown-toggle")]')
+        )
+    )
+    actions_button.click()
+    print(f"⚙️ Clicked 'Actions' dropdown for report {report_id}.")
+
+    # Click Export Excel .xlsx link
+    export_xpath = f'//a[@href="/R{report_id}/export/xlsx" and contains(text(), "Export Excel .xlsx")]'
+    export_option = wait.until(
+        EC.element_to_be_clickable(
+            (By.XPATH, export_xpath)
+        )
+    )
+    export_option.click()
+    print(f"📁 Clicked 'Export Excel .xlsx' for report {report_id}.")
+
+    # Wait for download to finish
+    time.sleep(10)
+
+def get_latest_excel_file():
+    download_dir = os.path.expanduser("~") + "/Downloads"  # Use default Downloads folder
+    print(f"📂 Listing files in {download_dir}: {os.listdir(download_dir)}")
+
+    xlsx_files = [f for f in os.listdir(download_dir) if f.endswith('.xlsx')]
+
+    if not xlsx_files:
+        print("❌ No .xlsx files found in the directory.")
+        return None
+
+    latest_file = max(
+        [os.path.join(download_dir, f) for f in xlsx_files],
+        key=os.path.getctime  # Get the most recently downloaded file based on creation time
+    )
+    print(f"📄 Latest downloaded Excel file: {latest_file}")
+    return latest_file
+
+def print_excel_columns(filepath):
+    df = pd.read_excel(filepath)
+    print("🧾 Column names in Excel file:")
+    print(df.columns.tolist())
+    return df
+
+# Setup Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--start-maximized")
+# chrome_options.add_argument("--headless")  # Uncomment to run in headless mode
+
+# Initialize Chrome driver
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+try:
+    wait = WebDriverWait(driver, 20)
+
+    # Step 1: Open the Comcast Workflow URL directly to the Reporting tab
+    driver.get("https://workflow.cable.comcast.com/reporting")
+
+    # Step 2: Click Comcast SSO login image
+    sso_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.XPATH, '//input[@type="image" and contains(@src, "comcast_stack_logo_button.png")]')
+        )
+    )
+    sso_button.click()
+    print("✅ Clicked Comcast SSO button.")
+
+    # Step 3: Wait for login to complete
+    wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+    time.sleep(3)
+
+    # Step 4: Click 'Reports' tab (ensure dropdowns are visible if needed)
+    try:
+        driver.execute_script("""
+            const dropdowns = document.querySelectorAll('li.dropdown-item, li.dropdown, ul.dropdown-menu');
+            dropdowns.forEach(el => el.style.display = 'block');
+        """)
+        print("🛠 Forced dropdown visible.")
+    except Exception as e:
+        print(f"⚠️ Dropdown forcing skipped: {e}")
+
+    # Step 5: Download Report 7271
+    download_report(driver, wait, 7271)
+    latest_file = get_latest_excel_file()
+    if latest_file:
+        df_7271 = print_excel_columns(latest_file)
+
+    # Step 6: Download Report 7272
+    download_report(driver, wait, 7272)
+    latest_file = get_latest_excel_file()
+    if latest_file:
+        df_7272 = print_excel_columns(latest_file)
+
+finally:
+    driver.quit()
+    print("🧹 Closed browser.")

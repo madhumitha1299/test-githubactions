@@ -27,4 +27,4 @@ jobs:
 
     - name: Run Python script
       run: |
-        python download_reports.py
+        python download.py

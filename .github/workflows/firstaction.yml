@@ -68,9 +68,9 @@ jobs:
             time.sleep(10)
 
         def get_latest_excel_file():
-            download_dir = tempfile.mkdtemp()  # Create a temporary directory for downloading
+            download_dir = os.path.expanduser("~") + "/Downloads"  # Use default Downloads folder
             print(f"📂 Listing files in {download_dir}: {os.listdir(download_dir)}")
-
+            
             xlsx_files = [f for f in os.listdir(download_dir) if f.endswith('.xlsx')]
 
             if not xlsx_files:

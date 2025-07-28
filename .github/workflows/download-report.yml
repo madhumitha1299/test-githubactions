@@ -1,0 +1,30 @@
+name: Selenium Report Download Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  selenium:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9  # Set the version of Python you want to use
+
+    - name: Install dependencies
+      run: |
+        pip install selenium pandas webdriver-manager
+
+    - name: Run Python script
+      run: |
+        python download_reports.py
